@@ -23,6 +23,22 @@ Guilty Gear XX Accent Core Plus R/
 ```
 
 
+## Frame Meter Legend
+![#01b597](https://placehold.co/15x15/01b597/01b597.png) Startup / Counter Hit State <br>
+![#CB2B67](https://placehold.co/15x15/CB2B67/CB2B67.png) Active <br>
+![#006FBC](https://placehold.co/15x15/006FBC/006FBC.png) Recovery <br>
+![#C8C800](https://placehold.co/15x15/C8C800/C8C800.png) Blockstun / Hitstun <br>
+![#969600](https://placehold.co/15x15/969600/969600.png) Knockdown / Techable Hitstun <br>
+![#41F8FC](https://placehold.co/15x15/41F8FC/41F8FC.png) Movement <br>
+### Under Lines
+![#FFFF00](https://placehold.co/15x15/FFFF00/FFFF00.png) FRC <br>
+![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png) Slash Back <br>
+![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png) Full Invuln <br>
+![#FF8000](https://placehold.co/15x15/FF8000/FF8000.png) Throw Invuln Only <br>
+![#0080FF](https://placehold.co/15x15/0080FF/0080FF.png) Strike Invuln Only <br>
+![#785000](https://placehold.co/15x15/785000/785000.png) Armor / Guardpoint / Parry<br>
+
+
 ## Reading a FrameMeter
 The frame meter is simply a timeline of [frames](https://glossary.infil.net/?t=Frame). There are two meters, one for each player, that can be compared with each other to help gauge [startup](https://glossary.infil.net/?t=Startup) and [advantage](https://glossary.infil.net/?t=Advantage) as well as other timing concepts. The frame meter color codes each frame based on the state the player character was in during that frame.
 
