@@ -42,11 +42,7 @@ namespace GearLoader {
          *      actual and expected GearLoader versions.
          */
         bool VersionError() {
-            if (GEARLOADER_VERSION_NUM > base->version) {
-                return GEARLOADER_VERSION_NUM - base->version >= 0x01000;
-            } else {
-                return base->version - GEARLOADER_VERSION_NUM >= 0x01000;
-            };
+            return (GEARLOADER_VERSION_NUM & 0xFF0000) != (base->version & 0xFF0000);
         }
         /**
          *  \brief Retrieves an exported API of another loaded mod.

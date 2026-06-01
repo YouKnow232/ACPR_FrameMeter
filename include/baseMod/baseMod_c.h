@@ -2,8 +2,8 @@
 #define BASEMOD_H
 
 #define BASEMOD_NAME "baseMod"
-#define BASEMOD_API_VERSION "1.0.0"
-#define BASEMOD_API_VERSION_NUM 0x010000
+#define BASEMOD_API_VERSION "1.1.0"
+#define BASEMOD_API_VERSION_NUM 0x010100
 #define BASEMOD_CALL __stdcall
 
 #ifdef __cplusplus
@@ -177,6 +177,25 @@ struct BaseMod_NativeFunctionsApi {
      *  \param color ARGB color value (i.e. `D3DCOLOR` from `D3D9Types.h`)
      */
     void BASEMOD_CALL (*DrawQuad)(int32_t left, int32_t top, int32_t right, int32_t bottom, int32_t z, uint32_t color);
+
+    /**
+     *  \brief Registers sprite data to a spriteId to later be rendered with `BaseMod_NativeFunctionsApi::DrawSprite`.
+     * 
+     *  Sprite data is given as an array of pointers to 
+     * 
+     *  \param spriteId The slot sprite data will be loaded into
+     *  \param textureDataArray The raw sprite data.
+     *  \param count The number of sprites to register. If 0, sprites will be registered until
+     *      a null pointer is found in the given array.
+     *  \return The number of sprites registered
+     */
+    uint32_t BASEMOD_CALL (*RegisterSprites)(uint32_t spriteId, void* textureDataArray, uint32_t count);
+
+    /**
+     *  \brief If the given player currently has an active command grab,
+     *      returns its command grab id, else return 0.
+     */
+    uint32_t BASEMOD_CALL (*GetActiveCommandGrabId)(GGXXACPR_Entity* player);
 };
 
 
@@ -606,6 +625,14 @@ typedef struct BaseMod_ModMenu_HelperFunctionsApi {
      *  \param flags see enum `BM_DrawScrollArrowFlags`
      */
     void BASEMOD_CALL (*DrawScrollArrow)(int32_t flags);
+
+    /**
+     *  \brief Yields control back to the main fiber. Use this to pause
+     *      `BM_CustomMenuHandler` execution until the next frame. Useful for sub-menus.
+     * 
+     *  See doc on [Plus R's Fibers](https://YouKnow232.github.io/GearLoader/doxygen/md_docs_2_game_architecture).
+     */
+    void BASEMOD_CALL (*SwitchToMainFiber)();
 
 } BaseMod_ModMenu_HelperFunctionsApi;
 typedef void (BASEMOD_CALL *BM_CustomMenuHandler)(GGXXACPR_PlayerInput* inputArr);

@@ -13,8 +13,8 @@
 #ifndef GGXXACPR_H
 #define GGXXACPR_H
 
-#define GGXXACPR_ABI_VERSION "1.0.0"
-#define GGXXACPR_ABI_VERSION_NUM 0x010000
+#define GGXXACPR_ABI_VERSION "1.1.0"
+#define GGXXACPR_ABI_VERSION_NUM 0x010100
 
 #include <assert.h>
 
@@ -348,11 +348,11 @@ enum GGXXACPR_CommandState {
     COMMAND_STATE_NO_FORWARD = 0x2,
     COMMAND_STATE_NO_BACKWARD = 0x4,
     COMMAND_STATE_NO_CROUCH = 0x8,
-    COMMAND_STATE_UNKNOWN_BIT_4 = 0x10,
+    COMMAND_STATE_NO_JUMP = 0x10,
     COMMAND_STATE_UNKNOWN_BIT_5 = 0x20,
     COMMAND_STATE_NO_ATTACK = 0x40,
     COMMAND_STATE_UNKNOWN_BIT_7 = 0x80,
-    COMMAND_STATE_UNKNOWN_BIT_8 = 0x100,
+    COMMAND_STATE_GUARD = 0x100,
     COMMAND_STATE_UNKNOWN_BIT_9 = 0x200,
     COMMAND_STATE_AIR_DASH = 0x400,
     COMMAND_STATE_UKEMI = 0x800,
@@ -419,6 +419,17 @@ enum GGXXACPR_SpriteRenderState {
     SPRITE_RENDER_STATE_LIGHT_GREEN_FLASH = 0x8000000,
     SPRITE_RENDER_STATE_LIGHT_YELLOW_FLASH = 0x10000000,
     SPRITE_RENDER_STATE_LIGHT_BLUE_FLASH = 0x20000000
+};
+
+enum GGXXACPR_DrawSpriteAttributes {
+    ACPR_DRAW_SPRITE_ALIGN_LEFT = 0x1,
+    ACPR_DRAW_SPRITE_ALIGN_X_CENTER = 0x2,
+    ACPR_DRAW_SPRITE_ALIGN_TOP = 0x4,
+    ACPR_DRAW_SPRITE_ALIGN_Y_CENTER = 0x8,
+    ACPR_DRAW_SPRITE_FLIP_TEXTURE_U = 0x10,
+    ACPR_DRAW_SPRITE_FLIP_TEXTURE_Y = 0x20,
+    ACPR_DRAW_SPRITE_ROTATE_CCW_90 = 0x1000,
+    ACPR_DRAW_SPRITE_ROTATE_180 = 0x2000,
 };
 
 enum GGXXACPR_RawControllerInput {
@@ -624,6 +635,239 @@ static_assert(offsetof(GGXXACPR_Camera, player1XPos) == 0x5C);
 static_assert(offsetof(GGXXACPR_Camera, playerCenterPointX) == 0x7C);
 static_assert(sizeof(GGXXACPR_Camera) == 0x9C);
 
+/* Character specific union structs */
+typedef struct GGXXACPR_CharacterSpecificVariables_Sol {
+    int16_t DragonInstallTimer;
+    PAD(2, 0x2);
+    int16_t DragonInstallSecond; // 2 byte bool
+    PAD(26, 0x6);
+} GGXXACPR_CharacterSpecificVariables_Sol;
+typedef struct GGXXACPR_CharacterSpecificVariables_May {
+    uint16_t RestiveRollingLimit;
+    /**
+     * 1 = Up, 2 = Down, 3 = Forward, 4 = Backward,
+     * 5 = Up-forward, 6 = Up-backward, 7 = Down-forward, 8 = Down_backward,
+     */
+    uint16_t RestiveRollingDirection;
+    /**
+     * Corresponds to button pressed for 41236X special.
+     * P = 0, K = 1, S = 2, H = 3, D = 4
+     */
+    uint16_t HoopDolphinType;
+    PAD(26, 0x6);
+} GGXXACPR_CharacterSpecificVariables_May;
+typedef struct GGXXACPR_CharacterSpecificVariables_Millia {
+    uint16_t LustShakerMash;
+    PAD(2, 0x2);
+    /**
+     * Array of queued directions:
+     *  1 = Up, 2 = Down, 3 = Forward, 4 = Backward,
+     *  5 = Up-forward, 6 = Up-backward, 7 = Down-forward, 8 = Down_backward,
+     */
+    uint8_t SecretGardenQueue[4];
+    PAD(24, 0x8);
+} GGXXACPR_CharacterSpecificVariables_Millia;
+typedef struct GGXXACPR_CharacterSpecificVariables_Axl {
+    PAD(2, 0x0);
+    uint16_t RensenState; // Unknown
+    PAD(28, 0x4);
+} GGXXACPR_CharacterSpecificVariables_Axl;
+typedef struct GGXXACPR_CharacterSpecificVariables_Potemkin {
+    uint8_t GiganticBulletInputted;
+    PAD(31, 0x1);
+} GGXXACPR_CharacterSpecificVariables_Potemkin;
+typedef struct GGXXACPR_CharacterSpecificVariables_Chipp {
+    int16_t LandBreakActOverride;
+    PAD(2, 0x2);
+    int16_t InvisibilityTimer;
+    // Essentially a 2 byte bool. Game code has the following line for
+    //  example when toggling: `FastShuriken = 1 - FastShuriken;`
+    int16_t FastShuriken;
+    PAD(8, 0x8);
+    int16_t InvisibilityLevel;
+    PAD(14, 0x12);
+} GGXXACPR_CharacterSpecificVariables_Chipp;
+typedef struct GGXXACPR_CharacterSpecificVariables_Eddie {
+    uint16_t Flags; // Unknown
+    PAD(2, 0x2);
+    int16_t EddieGauge;
+    PAD(1, 0x6);
+    uint8_t SummonMode; // 0 = Normal, 1 = Vice
+    PAD(24, 0x8);
+} GGXXACPR_CharacterSpecificVariables_Eddie;
+typedef struct GGXXACPR_CharacterSpecificVariables_Faust {
+    PAD(1, 0x0);
+    uint8_t DefenderChest; // Chest selected by defender in 236236S
+    uint8_t AttackerChest; // Chest selected by attacker in 236236S
+    PAD(1, 0x3);
+    int32_t DoorXPos; // World coordinate for door exit location
+    PAD(24, 0x8);
+} GGXXACPR_CharacterSpecificVariables_Faust;
+typedef struct GGXXACPR_CharacterSpecificVariables_Testament {
+    uint16_t CrowState; // 1 = Tracking Testament, 2 = Perched (idle animation)
+    PAD(2, 0x2);
+    int16_t DollCount;
+    PAD(2, 0x6);
+    int16_t CurseAttacks; // Current attack number in the curse sequence
+    PAD(2, 0xA);
+    int32_t CurseSequence; // The current curse sequence [0,3]
+    PAD(16, 0x10);
+} GGXXACPR_CharacterSpecificVariables_Testament;
+typedef struct GGXXACPR_CharacterSpecificVariables_Jam {
+    PAD(1, 0x0);
+    uint8_t CardSpecialChainsRemaining;
+    PAD(1, 0x2);
+    uint8_t RyuujinCards; // 22K
+    uint8_t GekirinCards; // 22S
+    uint8_t KenroukakuCards; // 22H
+    PAD(1, 0x6);
+    uint8_t ParryBufferTime; // Buffer window timer on successful parry
+    int8_t Parry; // -1 = Parry window, -2 = Successful hitstop, >0 = Cooldown timer
+    uint8_t JumpFlagOverride;
+    uint8_t UnknownOverride;
+    PAD(21, 0xB);
+} GGXXACPR_CharacterSpecificVariables_Jam;
+typedef struct GGXXACPR_CharacterSpecificVariables_Anji {
+    int16_t GuardPointCancelTimer;
+    int16_t GuardPointCancelOkay;
+    PAD(28, 0x4);
+} GGXXACPR_CharacterSpecificVariables_Anji;
+typedef struct GGXXACPR_CharacterSpecificVariables_Johnny {
+    int16_t MistFinerLevel;
+    PAD(2, 0x2);
+    uint8_t EXMistFinerTimer;
+    uint8_t CoinsUsed;
+    PAD(26, 0x6);
+} GGXXACPR_CharacterSpecificVariables_Johnny;
+typedef struct GGXXACPR_CharacterSpecificVariables_Venom {
+    uint8_t BilliardLaunchAngle;
+    uint8_t ChargedBilliardTimer;
+    uint8_t BilliardHealth; // Health imparted to billiards struck (billiard health determines damage)
+    uint8_t BilliardBounceFlags; // Flags imparted to billiards struck determine bounce behavior
+    PAD(4, 0x4);
+    uint8_t EXObjectBallStocks;
+    PAD(23, 0x9);
+} GGXXACPR_CharacterSpecificVariables_Venom;
+typedef struct GGXXACPR_CharacterSpecificVariables_Dizzy {
+    uint8_t FishActQueue[4];
+    uint8_t KnifeReleased; // bool
+    PAD(3, 0x5);
+    uint8_t EXKnifeStandby; // bool
+    PAD(1, 0x9);
+    uint16_t EXNecroInstallTimer;
+    PAD(20, 0xC);
+} GGXXACPR_CharacterSpecificVariables_Dizzy;
+typedef struct GGXXACPR_CharacterSpecificVariables_Zappa {
+    uint8_t Summon; // 0 = Naked, 1 = Sword, 2 = Dog, 3 = Triplets, 4 = Raou
+    PAD(1, 0x1);
+    int16_t Timer; // Summon rng timer?
+    int16_t RaouTimer;
+    int16_t ChatterCooldown; // lol
+    int16_t DogGatlingLimitReached; // 2 byte bool
+    uint16_t DogActionBuffer;
+    PAD(3, 0xC);
+    uint8_t AirDarknessAnthemUsesRemaining; // Set to 1 upon going airborne
+    uint16_t RaouDuration; // RaouTimer is initialized to this value. Referenced by HUD element display code.
+    PAD(14, 0x12);
+} GGXXACPR_CharacterSpecificVariables_Zappa;
+typedef struct GGXXACPR_CharacterSpecificVariables_Bridget {
+    int16_t YoYoSpeed;
+    uint16_t YoYoFlags;
+    uint16_t YoYoSetupTimer;
+    PAD(2, 0x6);
+    uint16_t RollingMovementUsesRemaining; // Set to 1 upon going airborne
+    uint16_t ThrowDirection; // Yo-yo throw direction given in numpad notation [1-9];
+    uint16_t Unknown_0xC;
+    uint16_t Unknown_0xE;
+    int32_t ThrowXVelocity;
+    int32_t ThrowYVelocity;
+    PAD(8, 0x18);
+} GGXXACPR_CharacterSpecificVariables_Bridget;
+typedef struct GGXXACPR_CharacterSpecificVariables_RoboKy {
+    int16_t HeatGain; // Target heat value is (HeatGain * 100/111) + 3000 and caps at 12000
+    PAD(2, 0x2);
+    int16_t Heat;
+    int16_t RisKyTimer;
+    PAD(6, 0x8);
+    int16_t RisKyHitboxIndex;
+    PAD(16, 0x10);
+} GGXXACPR_CharacterSpecificVariables_RoboKy;
+typedef struct GGXXACPR_CharacterSpecificVariables_ABA {
+    uint16_t InstallMode; // 0 = Normal, 1 = Moroha, 2 = Goku Moroha
+    uint16_t BloodBagCount;
+    PAD(2, 0x4);
+    uint16_t HealthReduction; // Health loss on hit
+    uint16_t BloodGauge;
+    PAD(4, 0xA);
+    uint16_t InstallMode_2; // Mode Duplicate? 0 = Normal, 1 = Moroha, 2 = Goku Moroha
+    uint16_t InstallAnimationTimer; // Timer used for background fade effect
+    PAD(14, 0x12);
+} GGXXACPR_CharacterSpecificVariables_ABA;
+typedef struct GGXXACPR_CharacterSpecificVariables_OrderSol {
+    uint16_t ChargeLevelFreezeTimer; // `ChargeLevelActual` Does not update while the value is non zero
+    PAD(6, 0x2);
+    uint16_t ChargeLevelActual; // Red part
+    uint16_t DragonInstallFollowUp; // 1 = Good, 2 = Failed;
+    uint16_t DragonInstallTimer; // Timer for traditional Dragon Install boss mechanic
+    uint16_t ChargeLevelTarget; // Yellow part
+    PAD(16, 0x10);
+} GGXXACPR_CharacterSpecificVariables_OrderSol;
+typedef struct GGXXACPR_CharacterSpecificVariables_Kliff {
+    uint16_t ScaleRipperTimer;
+    PAD(30, 0x2);
+} GGXXACPR_CharacterSpecificVariables_Kliff;
+typedef struct GGXXACPR_CharacterSpecificVariables_Justice {
+    uint16_t InstallTimer;
+    uint16_t AirMichaelSwordUsesRemaining; // Set to 1 upon being airborne
+    PAD(28, 0x4);
+} GGXXACPR_CharacterSpecificVariables_Justice;
+
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Sol));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_May));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Millia));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Axl));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Potemkin));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Chipp));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Eddie));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Faust));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Testament));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Jam));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Anji));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Johnny));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Venom));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Dizzy));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Zappa));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Bridget));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_RoboKy));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_ABA));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_OrderSol));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Kliff));
+static_assert(0x20 == sizeof(GGXXACPR_CharacterSpecificVariables_Justice));
+
+union GGXXACPR_CharacterSpecificVariables {
+    uint8_t RawData[32];
+    GGXXACPR_CharacterSpecificVariables_Sol Sol;
+    GGXXACPR_CharacterSpecificVariables_May May;
+    GGXXACPR_CharacterSpecificVariables_Millia Millia;
+    GGXXACPR_CharacterSpecificVariables_Axl Axl;
+    GGXXACPR_CharacterSpecificVariables_Potemkin Potemkin;
+    GGXXACPR_CharacterSpecificVariables_Chipp Chipp;
+    GGXXACPR_CharacterSpecificVariables_Eddie Eddie;
+    GGXXACPR_CharacterSpecificVariables_Faust Faust;
+    GGXXACPR_CharacterSpecificVariables_Testament Testament;
+    GGXXACPR_CharacterSpecificVariables_Jam Jam;
+    GGXXACPR_CharacterSpecificVariables_Anji Anji;
+    GGXXACPR_CharacterSpecificVariables_Johnny Johnny;
+    GGXXACPR_CharacterSpecificVariables_Venom Venom;
+    GGXXACPR_CharacterSpecificVariables_Dizzy Dizzy;
+    GGXXACPR_CharacterSpecificVariables_Zappa Zappa;
+    GGXXACPR_CharacterSpecificVariables_Bridget Bridget;
+    GGXXACPR_CharacterSpecificVariables_RoboKy RoboKy;
+    GGXXACPR_CharacterSpecificVariables_ABA ABA;
+    GGXXACPR_CharacterSpecificVariables_OrderSol OrderSol;
+    GGXXACPR_CharacterSpecificVariables_Kliff Kliff;
+    GGXXACPR_CharacterSpecificVariables_Justice Justice;
+};
 
 // A sub-struct that contains data exclusive to player entities (as opposed to more generic entity data).
 typedef struct GGXXACPR_PlayerData {
@@ -703,13 +947,8 @@ typedef struct GGXXACPR_PlayerData {
     uint8_t cpu;
     uint8_t sousaiTime;
     uint8_t dizzyThreshold; /* AKA FaintMax in debug symbols */
-    int16_t charSpecificVar; /* Zappa active summon, ABA install mode, Sol's Dragon Install timer, etc */
-    int16_t UNKNOWN_FIELD(0x8A); /* RE note: set to 0 beginning of act_update for Anji; relates to not being airborne */
-    int16_t UNKNOWN_FIELD(0x8C); /* RE note: used in Bridget & Robo-Ky update func */
-    uint8_t UNKNOWN_FIELD(0x8E); /* RE note: used in Robo-Ky update func as short (extends into JamParry) */
-    uint8_t jamParry;
-    uint8_t jamParryTime;
-    PAD(27, 0x91);
+    GGXXACPR_CharacterSpecificVariables characterSpecific;
+    PAD(4, 0x9C);
     uint32_t hitstunFlags; /* SlidingKD, wall bounce, etc */
     uint32_t UNKNOWN_FIELD(0xB0); /* RE note: Child?*/
     uint32_t atkHitInterrupt;
@@ -941,6 +1180,49 @@ static_assert(offsetof(GGXXACPR_Entity, speedsvX) == 0xC0);
 static_assert(offsetof(GGXXACPR_Entity, trans) == 0x100);
 static_assert(sizeof(GGXXACPR_Entity) == 0x130);
 
+enum GGXXACPR_TrainingState {
+    ACPR_TRAINING_STATE_DEFAULT,
+    ACPR_TRAINING_STATE_SWITCH,
+    ACPR_TRAINING_STATE_RECORDING_STANDBY,
+    ACPR_TRAINING_STATE_RECORDING_RECORD,
+    ACPR_TRAINING_STATE_RECORDING_PLAYBACK,
+    ACPR_TRAINING_STATE_PRACTICE_UNUSED,
+};
+/**
+ *  \brief Training mode dummy reversal recording struct
+ */
+typedef struct GGXXACPR_ReversalRecordingState {
+    uint8_t UNKNOWN_FIELD(0x0);
+    uint8_t UNKNOWN_FIELD(0x1);
+    uint16_t PlaybackTimer;
+    int32_t* Recording;
+    int32_t InstantStartIndex;
+    int32_t RecordingSize;
+} GGXXACPR_ReversalRecordingState;
+static_assert(sizeof(GGXXACPR_ReversalRecordingState) == 0x10);
+/**
+ *  \brief Training mode dummy recording struct
+ */
+typedef struct GGXXACPR_DummyRecordingState {
+    uint16_t State; // Enum GGXXACPR_TrainingState
+    uint16_t PlaybackTimer;
+    int16_t UNKNOWN_FIELD(0x4);
+    int16_t RNG;
+    int32_t Recordings[4500][4];
+    int32_t UNKNOWN_FIELD(0x11948); // Current slot?
+    int32_t InstantStartIndices[4];
+    int32_t RecordingSizes[4];
+    int32_t UNKNOWN_FIELD(0x1196C);   // Recording ptr?
+    int32_t UNKNOWN_FIELD(0x11970);   // starting point?
+    int32_t UNKNOWN_FIELD(0x11974);   // recording size?
+    int32_t UNKNOWN_FIELD(0x11978);
+    struct GGXXACPR_ReversalRecordingState ReversalRecordingStates[2];
+    uint32_t InputArray[4][2]; // Enum GGXXACPR_RawControllerInput
+} GGXXACPR_DummyRecordingState;
+static_assert(offsetof(GGXXACPR_DummyRecordingState, UNKNOWN_FIELD(0x11948)) == 0x11948);
+static_assert(offsetof(GGXXACPR_DummyRecordingState, UNKNOWN_FIELD(0x11978)) == 0x11978);
+static_assert(sizeof(GGXXACPR_DummyRecordingState) == (0x6bb6d0 - 0x6a9d14));
+
 #if defined(D3DCOLOR_DEFINED) && defined(D3DVECTOR_DEFINED)
     typedef D3DVECTOR GGXXACPR_Vector;
     typedef D3DCOLOR GGXXACPR_Color;
@@ -966,9 +1248,9 @@ typedef struct GGXXACPR_DrawSpriteParams {
     float zm_x, zm_y;
     float u0, v0, u1, v1;
     int32_t angle;
-    float trans1;
+    float alpha;    // transparency
     int16_t listType;
-    uint16_t attribute;
+    uint16_t attribute; // see enum GGXXACPR_DrawSpriteAttributes
     int32_t base_color;
     int32_t offset_color;
     int32_t size_x;

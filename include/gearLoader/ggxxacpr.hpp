@@ -275,39 +275,39 @@ namespace ggxxacpr {
 
     /* ========== #BITFIELD ENUMS ========== */
     enum class ActionState : uint32_t {
-            NONE = ACTION_STATE_NONE,
-            IS_ENTITY = ACTION_STATE_IS_ENTITY, /* Typically always set unless the entity is despawning */
-            COLLIDES_WITH_P2 = ACTION_STATE_COLLIDES_WITH_P2,
-            COLLIDES_WITH_P1 = ACTION_STATE_COLLIDES_WITH_P1,
-            DRAW_SPRITE = ACTION_STATE_DRAW_SPRITE,
-            IS_AIRBORNE = ACTION_STATE_IS_AIRBORNE,
-            IS_IN_HITSTUN = ACTION_STATE_IS_IN_HITSTUN,
-            DISABLE_HITBOXES = ACTION_STATE_DISABLE_HITBOXES,
-            DISABLE_HURTBOXES = ACTION_STATE_DISABLE_HURTBOXES, /* Essentially identical to StrikeInvuln but some mechanics/moves use one over the other. */
-            KNOCKED_DOWN = ACTION_STATE_KNOCKED_DOWN,
-            IS_IN_BLOCKSTUN = ACTION_STATE_IS_IN_BLOCKSTUN,
-            IS_CROUCHING = ACTION_STATE_IS_CROUCHING,
-            IS_CORNERED = ACTION_STATE_IS_CORNERED,
-            LANDING_FLAG = ACTION_STATE_LANDING_FLAG,
-            IS_AT_SCREEN_LIMIT = ACTION_STATE_IS_AT_SCREEN_LIMIT, /* Bounded by screen edge, but not necessarily cornered */
-            PROJECTILE_INVULN = ACTION_STATE_PROJECTILE_INVULN, /* A legacy value, that's mainly used in throw animations as a sort of invuln flag. */
-            WAKEUP = ACTION_STATE_WAKEUP,
-            DISABLE_WAKEUP = ACTION_STATE_DISABLE_WAKEUP,  /* Set at round end for the KO'd player. */
-            STRIKE_INVULN = ACTION_STATE_STRIKE_INVULN,
-            IS_IDLE = ACTION_STATE_IS_IDLE,
-            SUPER_FLASH = ACTION_STATE_SUPER_FLASH, /* Set only when the entity is frozen in super flash. */
-            NO_COLLISION = ACTION_STATE_NO_COLLISION,
-            GRAVITY = ACTION_STATE_GRAVITY,
-            UNKNOWN_BIT_22 = ACTION_STATE_UNKNOWN_BIT_22,
-            THROW_INVULN = ACTION_STATE_THROW_INVULN,
-            UNKNOWN_BIT_24 = ACTION_STATE_UNKNOWN_BIT_24,
-            UNKNOWN_BIT_25 = ACTION_STATE_UNKNOWN_BIT_25,
-            UNKNOWN_BIT_26 = ACTION_STATE_UNKNOWN_BIT_26,
-            UNKNOWN_BIT_27 = ACTION_STATE_UNKNOWN_BIT_27,
-            UNKNOWN_BIT_28 = ACTION_STATE_UNKNOWN_BIT_28,
-            UNKNOWN_BIT_29 = ACTION_STATE_UNKNOWN_BIT_29,
-            IGNORE_RECEIVED_HIT_EFFECTS = ACTION_STATE_IGNORE_RECEIVED_HIT_EFFECTS, /* Used for Dizzy bubble. Essentially disables hitstop. */
-            DESPAWN = ACTION_STATE_DESPAWN, /* Entity is marked for despawn */
+        NONE = ACTION_STATE_NONE,
+        IS_ENTITY = ACTION_STATE_IS_ENTITY, /* Typically always set unless the entity is despawning */
+        COLLIDES_WITH_P2 = ACTION_STATE_COLLIDES_WITH_P2,
+        COLLIDES_WITH_P1 = ACTION_STATE_COLLIDES_WITH_P1,
+        DRAW_SPRITE = ACTION_STATE_DRAW_SPRITE,
+        IS_AIRBORNE = ACTION_STATE_IS_AIRBORNE,
+        IS_IN_HITSTUN = ACTION_STATE_IS_IN_HITSTUN,
+        DISABLE_HITBOXES = ACTION_STATE_DISABLE_HITBOXES,
+        DISABLE_HURTBOXES = ACTION_STATE_DISABLE_HURTBOXES, /* Essentially identical to StrikeInvuln but some mechanics/moves use one over the other. */
+        KNOCKED_DOWN = ACTION_STATE_KNOCKED_DOWN,
+        IS_IN_BLOCKSTUN = ACTION_STATE_IS_IN_BLOCKSTUN,
+        IS_CROUCHING = ACTION_STATE_IS_CROUCHING,
+        IS_CORNERED = ACTION_STATE_IS_CORNERED,
+        LANDING_FLAG = ACTION_STATE_LANDING_FLAG,
+        IS_AT_SCREEN_LIMIT = ACTION_STATE_IS_AT_SCREEN_LIMIT, /* Bounded by screen edge, but not necessarily cornered */
+        PROJECTILE_INVULN = ACTION_STATE_PROJECTILE_INVULN, /* A legacy value, that's mainly used in throw animations as a sort of invuln flag. */
+        WAKEUP = ACTION_STATE_WAKEUP,
+        DISABLE_WAKEUP = ACTION_STATE_DISABLE_WAKEUP,  /* Set at round end for the KO'd player. */
+        STRIKE_INVULN = ACTION_STATE_STRIKE_INVULN,
+        IS_IDLE = ACTION_STATE_IS_IDLE,
+        SUPER_FLASH = ACTION_STATE_SUPER_FLASH, /* Set only when the entity is frozen in super flash. */
+        NO_COLLISION = ACTION_STATE_NO_COLLISION,
+        GRAVITY = ACTION_STATE_GRAVITY,
+        UNKNOWN_BIT_22 = ACTION_STATE_UNKNOWN_BIT_22,
+        THROW_INVULN = ACTION_STATE_THROW_INVULN,
+        UNKNOWN_BIT_24 = ACTION_STATE_UNKNOWN_BIT_24,
+        UNKNOWN_BIT_25 = ACTION_STATE_UNKNOWN_BIT_25,
+        UNKNOWN_BIT_26 = ACTION_STATE_UNKNOWN_BIT_26,
+        UNKNOWN_BIT_27 = ACTION_STATE_UNKNOWN_BIT_27,
+        UNKNOWN_BIT_28 = ACTION_STATE_UNKNOWN_BIT_28,
+        UNKNOWN_BIT_29 = ACTION_STATE_UNKNOWN_BIT_29,
+        IGNORE_RECEIVED_HIT_EFFECTS = ACTION_STATE_IGNORE_RECEIVED_HIT_EFFECTS, /* Used for Dizzy bubble. Essentially disables hitstop. */
+        DESPAWN = ACTION_STATE_DESPAWN, /* Entity is marked for despawn */
     };
 
     enum class AttackState : uint32_t {
@@ -344,11 +344,11 @@ namespace ggxxacpr {
         NO_FORWARD = COMMAND_STATE_NO_FORWARD,
         NO_BACKWARD = COMMAND_STATE_NO_BACKWARD,
         NO_CROUCH = COMMAND_STATE_NO_CROUCH,
-        UNKNOWN_BIT_4 = COMMAND_STATE_UNKNOWN_BIT_4,
+        NO_JUMP = COMMAND_STATE_NO_JUMP,
         UNKNOWN_BIT_5 = COMMAND_STATE_UNKNOWN_BIT_5,
         NO_ATTACK = COMMAND_STATE_NO_ATTACK,
         UNKNOWN_BIT_7 = COMMAND_STATE_UNKNOWN_BIT_7,
-        UNKNOWN_BIT_8 = COMMAND_STATE_UNKNOWN_BIT_8,
+        GUARD = COMMAND_STATE_GUARD,
         UNKNOWN_BIT_9 = COMMAND_STATE_UNKNOWN_BIT_9,
         AIR_DASH = COMMAND_STATE_AIR_DASH,
         UKEMI = COMMAND_STATE_UKEMI,
@@ -417,6 +417,17 @@ namespace ggxxacpr {
         LIGHT_BLUE_FLASH = SPRITE_RENDER_STATE_LIGHT_BLUE_FLASH,
     };
 
+    enum class DrawSpriteAttributes : uint16_t {
+        ALIGN_LEFT = ACPR_DRAW_SPRITE_ALIGN_LEFT,
+        ALIGN_X_CENTER = ACPR_DRAW_SPRITE_ALIGN_X_CENTER,
+        ALIGN_TOP = ACPR_DRAW_SPRITE_ALIGN_TOP,
+        ALIGN_Y_CENTER = ACPR_DRAW_SPRITE_ALIGN_Y_CENTER,
+        FLIP_TEXTURE_U = ACPR_DRAW_SPRITE_FLIP_TEXTURE_U,
+        FLIP_TEXTURE_Y = ACPR_DRAW_SPRITE_FLIP_TEXTURE_Y,
+        ROTATE_CCW_90 = ACPR_DRAW_SPRITE_ROTATE_CCW_90,
+        ROTATE_180 = ACPR_DRAW_SPRITE_ROTATE_180,
+    };
+
     enum class RawControllerInput : uint32_t {
         NONE = INPUT_NONE,
         SELECT = INPUT_SELECT,
@@ -435,6 +446,15 @@ namespace ggxxacpr {
         RIGHT_FACE = INPUT_RIGHT_FACE,
         BOTTOM_FACE = INPUT_BOTTOM_FACE,
         LEFT_FACE = INPUT_LEFT_FACE,
+    };
+
+    enum class TrainingState : uint16_t {
+        DEFAULT = ACPR_TRAINING_STATE_DEFAULT,
+        SWITCH = ACPR_TRAINING_STATE_SWITCH,
+        RECORDING_STANDBY = ACPR_TRAINING_STATE_RECORDING_STANDBY,
+        RECORDING_RECORD = ACPR_TRAINING_STATE_RECORDING_RECORD,
+        RECORDING_PLAYBACK = ACPR_TRAINING_STATE_RECORDING_PLAYBACK,
+        PRACTICE_UNUSED = ACPR_TRAINING_STATE_PRACTICE_UNUSED,
     };
 
 
@@ -497,6 +517,34 @@ namespace ggxxacpr {
     using Color = GGXXACPR_Color;
     using ColorVertex = GGXXACPR_ColorVertex;
     using DrawSpriteParams = GGXXACPR_DrawSpriteParams;
+    using ReversalRecordingState = GGXXACPR_ReversalRecordingState;
+    using DummyRecordingState = GGXXACPR_DummyRecordingState;
+
+    using CharacterSpecific = GGXXACPR_CharacterSpecificVariables;
+    namespace CharacterSpecificStructs {
+        using Sol = GGXXACPR_CharacterSpecificVariables_Sol;
+        using May = GGXXACPR_CharacterSpecificVariables_May;
+        using Millia = GGXXACPR_CharacterSpecificVariables_Millia;
+        using Axl = GGXXACPR_CharacterSpecificVariables_Axl;
+        using Potemkin = GGXXACPR_CharacterSpecificVariables_Potemkin;
+        using Chipp = GGXXACPR_CharacterSpecificVariables_Chipp;
+        using Eddie = GGXXACPR_CharacterSpecificVariables_Eddie;
+        using Faust = GGXXACPR_CharacterSpecificVariables_Faust;
+        using Testament = GGXXACPR_CharacterSpecificVariables_Testament;
+        using Jam = GGXXACPR_CharacterSpecificVariables_Jam;
+        using Anji = GGXXACPR_CharacterSpecificVariables_Anji;
+        using Johnny = GGXXACPR_CharacterSpecificVariables_Johnny;
+        using Venom = GGXXACPR_CharacterSpecificVariables_Venom;
+        using Dizzy = GGXXACPR_CharacterSpecificVariables_Dizzy;
+        using Zappa = GGXXACPR_CharacterSpecificVariables_Zappa;
+        using Bridget = GGXXACPR_CharacterSpecificVariables_Bridget;
+        using RoboKy = GGXXACPR_CharacterSpecificVariables_RoboKy;
+        using ABA = GGXXACPR_CharacterSpecificVariables_ABA;
+        using OrderSol = GGXXACPR_CharacterSpecificVariables_OrderSol;
+        using Kliff = GGXXACPR_CharacterSpecificVariables_Kliff;
+        using Justice = GGXXACPR_CharacterSpecificVariables_Justice;
+    }
+
 
     /* ========== #VIEWS ========== */
 
@@ -717,36 +765,40 @@ namespace ggxxacpr {
         
         /* PlayerData fields -------------------------------------------------- */
 
-        #define SAFE_GET_PDATA(name) raw->playerEntityDataPtr ? raw->playerEntityDataPtr->name : 0
+        #define SAFE_GET_PDATA_FN(TYPE, FIELD_NAME, DEFAULT) \
+            TYPE FIELD_NAME() {                              \
+                return raw->playerEntityDataPtr ?            \
+                raw->playerEntityDataPtr->FIELD_NAME :       \
+                DEFAULT;                                     \
+            }
 
-        uint16_t tension() { return SAFE_GET_PDATA(tension); }
-        uint8_t staggerShakeTime() { return SAFE_GET_PDATA(staggerShakeTime); }
-        uint16_t currentGlobalProration() { return SAFE_GET_PDATA(currentGlobalProration); }
-        int16_t negativePenaltyTimer() { return SAFE_GET_PDATA(negativePenaltyTimer); }
-        int16_t throwProtectionTimer() { return SAFE_GET_PDATA(throwProtectionTimer); }
-        int16_t guardBar() { return SAFE_GET_PDATA(guardBar); }
-        int16_t untechTimer() { return SAFE_GET_PDATA(untechTimer); }
-        uint8_t invulnCounter() { return SAFE_GET_PDATA(invulnCounter); }
-        int16_t tensionGainPenaltyTimer() { return SAFE_GET_PDATA(tensionGainPenaltyTimer); }
-        uint8_t frcTime() { return SAFE_GET_PDATA(frcTime); }
-        uint8_t frcLockoutTimer() { return SAFE_GET_PDATA(frcLockoutTimer); }
-        uint8_t instantBlockTimer() { return SAFE_GET_PDATA(instantBlockTimer); }
-        int16_t instantBlockLockoutTimer() { return SAFE_GET_PDATA(instantBlockLockoutTimer); }
-        uint8_t jumpCount() { return SAFE_GET_PDATA(jumpCount); }
-        uint8_t airDashCount() { return SAFE_GET_PDATA(airDashCount); }
-        int16_t dizzyBuildup() { return SAFE_GET_PDATA(dizzyBuildup); }
-        int16_t dizzyDuration() { return SAFE_GET_PDATA(dizzyDuration); }
-        bool cpu() { return raw->playerEntityDataPtr ? raw->playerEntityDataPtr->cpu > 0 : false; }
-        uint8_t dizzyThreshold() { return SAFE_GET_PDATA(dizzyThreshold); }
-        uint8_t jamParry() { return SAFE_GET_PDATA(jamParry); }
-        uint8_t jamParryTime() { return SAFE_GET_PDATA(jamParryTime); }
-        int16_t tensionPulse() { return SAFE_GET_PDATA(tensionPulse); }
-        int16_t comboTime() { return SAFE_GET_PDATA(comboTime); }
-        int16_t burstMeter() { return SAFE_GET_PDATA(burstMeter); }
-        int16_t comboCounter() { return SAFE_GET_PDATA(comboCounter); }
-        int32_t cleanHitCounter() { return SAFE_GET_PDATA(cleanHitCounter); }
+        SAFE_GET_PDATA_FN(uint16_t, tension, 0)
+        SAFE_GET_PDATA_FN(uint8_t,  staggerShakeTime, 0)
+        SAFE_GET_PDATA_FN(uint16_t, currentGlobalProration, 0)
+        SAFE_GET_PDATA_FN(int16_t,  negativePenaltyTimer, 0)
+        SAFE_GET_PDATA_FN(int16_t,  throwProtectionTimer, 0)
+        SAFE_GET_PDATA_FN(int16_t,  guardBar, 0)
+        SAFE_GET_PDATA_FN(int16_t,  untechTimer, 0)
+        SAFE_GET_PDATA_FN(uint8_t,  invulnCounter, 0)
+        SAFE_GET_PDATA_FN(int16_t,  tensionGainPenaltyTimer, 0)
+        SAFE_GET_PDATA_FN(uint8_t,  frcTime, 0)
+        SAFE_GET_PDATA_FN(uint8_t,  frcLockoutTimer, 0)
+        SAFE_GET_PDATA_FN(uint8_t,  instantBlockTimer, 0)
+        SAFE_GET_PDATA_FN(int16_t,  instantBlockLockoutTimer, 0)
+        SAFE_GET_PDATA_FN(uint8_t,  jumpCount, 0)
+        SAFE_GET_PDATA_FN(uint8_t,  airDashCount, 0)
+        SAFE_GET_PDATA_FN(int16_t,  dizzyBuildup, 0)
+        SAFE_GET_PDATA_FN(int16_t,  dizzyDuration, 0)
+        SAFE_GET_PDATA_FN(bool,     cpu, false)
+        SAFE_GET_PDATA_FN(uint8_t,  dizzyThreshold, 0)
+        SAFE_GET_PDATA_FN(CharacterSpecific, characterSpecific, CharacterSpecific{})
+        SAFE_GET_PDATA_FN(int16_t,  tensionPulse, 0)
+        SAFE_GET_PDATA_FN(int16_t,  comboTime, 0)
+        SAFE_GET_PDATA_FN(int16_t,  burstMeter, 0)
+        SAFE_GET_PDATA_FN(int16_t,  comboCounter, 0)
+        SAFE_GET_PDATA_FN(int32_t,  cleanHitCounter, 0)
 
-        #undef SAFE_GET_PDATA
+        #undef SAFE_GET_PDATA_FN
 
 
         /* Setters -------------------------------------------------- */
